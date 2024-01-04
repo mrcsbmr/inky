@@ -272,6 +272,7 @@ ToolbarView.setEvents({
     navigateBack: () => NavHistory.back(),
     navigateForward: () => NavHistory.forward(),
     selectIssue: gotoIssue,
+    togglePlayer: () => { PlayerView.toggle(); },
     stepBack: () => {
         PlayerView.previewStepBack();
         LiveCompiler.stepBack();

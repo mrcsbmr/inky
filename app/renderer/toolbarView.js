@@ -128,7 +128,10 @@ $(document).ready(function() {
         event.preventDefault();
     });
 
-
+    $("#toolbar .player-toggle.button").on("click", function(event) {
+        events.togglePlayer();
+        event.preventDefault();
+    });
 
     $("#toolbar .rewind.button").on("click", function(event) {
         events.rewind();

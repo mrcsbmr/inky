@@ -6,6 +6,9 @@ var lastFadeTime = 0;
 var $textBuffer = null;
 var instructionPrefix = null;
 
+var $playerButton;
+const slideAnimDuration = 200;
+
 document.addEventListener("keyup", function(){
     $("#player").removeClass("altKey");
 });
@@ -62,6 +65,8 @@ function fadeIn($jqueryElement) {
 }
 
 function contentReady() {
+    $playerButton = $("#toolbar .player-toggle.button")
+    $playerButton.addClass("selected");
 
     var $scrollContainer = $("#player .scrollContainer");
     $scrollContainer.stop();
@@ -294,6 +299,47 @@ function setInstructionPrefix(prefix) {
     }
 }
 
+function toggle() {
+    if ($("#player").hasClass("hidden")) {
+        $("#player").removeClass("hidden");
+        animatePlayer(true);
+        $playerButton.addClass("selected");
+    } else {
+        $("#player").addClass("hidden");
+        animatePlayer(false);
+        $playerButton.removeClass("selected");
+    }
+}
+
+function animatePlayer(show) {
+
+    if (!show)
+        $("#player").hide();   
+
+    $("#player").animate({
+        left: show ? "50%" : 0, 
+        width: show ? "50%" : 0 
+    }, slideAnimDuration, () => {
+        show ? $("#player").show() : $("#player").hide();    
+    });
+
+    if (show) {
+        $("#main").children(".twopane").children(".split").show();
+        $("#main").children(".twopane").children(".split").css("left", "50%");
+    }
+    else {
+        $("#main").children(".twopane").children(".split").hide();
+        //$("#main").children(".twopane").children(".split").css("left", "100%");
+    }
+    
+    $("#editor").animate({
+        right: show ? "50%" : 0,
+        width: show ? "50%" : "100%"
+    }, slideAnimDuration);
+
+}
+
+
 exports.PlayerView = {
     setEvents: (e) => { events = e; },
     contentReady: contentReady,
@@ -308,5 +354,6 @@ exports.PlayerView = {
     addEvaluationResult: addEvaluationResult,
     showSessionView: showSessionView,
     previewStepBack: previewStepBack,
-    setInstructionPrefix: setInstructionPrefix
+    setInstructionPrefix: setInstructionPrefix,
+    toggle: toggle
 };  
