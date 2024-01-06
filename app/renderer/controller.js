@@ -27,6 +27,8 @@ const NavHistory = require("./navHistory.js").NavHistory;
 const GotoAnything = require("./goto.js").GotoAnything;
 const i18n = require("./i18n.js");
 
+var pausedCompiler = false;
+
 InkProject.setEvents({
     "newProject": (project) => {
         EditorView.focus();
@@ -272,7 +274,18 @@ ToolbarView.setEvents({
     navigateBack: () => NavHistory.back(),
     navigateForward: () => NavHistory.forward(),
     selectIssue: gotoIssue,
-    togglePlayer: () => { PlayerView.toggle(); },
+    togglePlayer: () => { 
+
+        if (pausedCompiler) {
+            PlayerView.resume(); 
+            LiveCompiler.resume();
+            pausedCompiler = false;
+        } else {
+            PlayerView.pause(); 
+            LiveCompiler.stop();
+            pausedCompiler = true;
+        }
+    },
     stepBack: () => {
         PlayerView.previewStepBack();
         LiveCompiler.stepBack();

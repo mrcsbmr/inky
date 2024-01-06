@@ -299,17 +299,14 @@ function setInstructionPrefix(prefix) {
     }
 }
 
-function toggle() {
-    if ($("#player").hasClass("hidden")) {
-        $("#player").removeClass("hidden");
-        animatePlayer(true);
-        $playerButton.addClass("selected");
-    } else {
-        $("#player").addClass("hidden");
-        animatePlayer(false);
-        $playerButton.removeClass("selected");
-    }
+function pause() {
+    animatePlayer(false);
 }
+
+function resume() {
+    animatePlayer(true);
+}
+
 
 function animatePlayer(show) {
 
@@ -355,5 +352,6 @@ exports.PlayerView = {
     showSessionView: showSessionView,
     previewStepBack: previewStepBack,
     setInstructionPrefix: setInstructionPrefix,
-    toggle: toggle
+    pause: pause,
+    resume: resume
 };  

@@ -28,6 +28,10 @@ var project = null;
 var events = {};
 
 var compilerBusy = false;
+var compilerPaused = false;
+
+var infiniteLoopCheckString = "";
+var infiniteLoopCounter = 0;
 
 function setProject(p) {
     project = p;
@@ -81,6 +85,10 @@ function updateCompilerIsBusy(isBusy) {
 }
 
 function reloadInklecateSession() {
+
+    if (compilerPaused) {
+        return;
+    }
 
     if( project == null || !project.ready ) {
         reloadPending = true;
@@ -165,12 +173,21 @@ function rewind() {
     choiceSequence = [];
     currentTurnIdx = -1;
     reloadInklecateSession();
+    compilerPaused = false;
 }
 
 function stepBack() {
     if( choiceSequence.length > 0 )
         choiceSequence.splice(-1, 1);
     reloadInklecateSession();
+}
+
+function stop() {
+    compilerPaused = true;
+}
+
+function resume() {
+    compilerPaused = false;
 }
 
 function getLocationInSource(offset, callback) {
@@ -233,8 +250,33 @@ ipc.on("compile-complete", (event, fromSessionId) => {
 
 
 ipc.on("play-generated-text", (event, result, fromSessionId) => {
-
+    
     if( fromSessionId != currentPlaySessionId ) return;
+
+    if (result == infiniteLoopCheckString) {
+        infiniteLoopCounter++;
+        console.log("loop?");
+        if (infiniteLoopCounter > 50) {
+            
+            console.log("Infinite loop detected!");
+            events.textAdded("Infinite loop detected!");
+
+            var inkErrors = [{
+                type: "RUNTIME ERROR",
+                filename: "",
+                lineNumber: 0,
+                message: "Infinite loop detected!" }];
+
+            events.errorsAdded(inkErrors);
+
+            ipc.send("play-stop-ink", fromSessionId);
+            compilerPaused = true;
+        }
+    }
+    else {
+        infiniteLoopCounter = 0;
+    }
+    infiniteLoopCheckString = result;
 
     // May have just finished compiling, have text
     updateCompilerIsBusy(false);
@@ -413,6 +455,8 @@ exports.LiveCompiler = {
     choose: choose,
     rewind: rewind,
     stepBack: stepBack,
+    stop: stop,
+    resume: resume,
     getLocationInSource: getLocationInSource,
     getRuntimePathInSource: getRuntimePathInSource,
     evaluateExpression: evaluateExpression,
