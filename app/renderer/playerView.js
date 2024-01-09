@@ -117,7 +117,18 @@ function prepareForNewPlaythrough(sessionId) {
 
 function addTextSection(text)
 {
-    var $paragraph = $("<p class='storyText'></p>");
+    if (text.startsWith("/")) {
+        text = text.substring(1).toUpperCase();
+        var $paragraph = $("<p align=center class='storyText speaker'></p>");
+    }
+    else if (text.startsWith("INKLOG: ")) {
+        text = text.substring(8);
+        var $paragraph = $("<p class='storyText inkLog'></p>");
+    }
+    else {
+        var $paragraph = $("<p class='storyText dialogue'></p>");
+    }
+   
 
     // Game-specific instruction prefix, e.g. >>> START CAMERA: Wide shot
     if( instructionPrefix && text.trim().startsWith(instructionPrefix) ) {

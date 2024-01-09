@@ -593,7 +593,7 @@ img.issue-icon.warning {
   right: 0;
   left: 50%;
 
-  font-family: Verdana, Geneva, sans-serif;
+  font-family: Monaco, 'Courier New', monospace;
   font-weight: lighter;
   color: #555;
 }
@@ -924,4 +924,14 @@ img.issue-icon.warning {
 
 .sidebar .nav-wrapper::-webkit-scrollbar-thumb {
   background: #DDDDDD;
+}
+
+.ace_editor {
+  font-family: "IA Writer Mono S" !important;
+  line-height: 1.8em;
+}
+
+.dialogue {
+  margin-left: 20%;
+  margin-right: 20%;
 }
