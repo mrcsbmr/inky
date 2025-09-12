@@ -106,6 +106,10 @@ exports.snippets = [
                 "name": i18n._('Modify variable'),
                 "ink": "~ myNumber = myNumber + 1\n"
             },
+            {
+                name: i18n._('Get variable type'),
+                ink:  loadLongerSnippet("type_of.ink") 
+            }
 
         ]
     },
