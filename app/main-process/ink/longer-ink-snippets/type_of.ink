@@ -19,7 +19,6 @@
 
 LIST Type = List, String, Number, Bool
 === function type_of(val)
-    ~ temp ret = ()
     {"{val + val}":
         - "{val}{val}":
             {val ? val:
