@@ -595,10 +595,12 @@ img.issue-icon.warning {
   bottom: 0;
   right: 0;
   left: 50%;
-  font-family: system-ui, -apple-system, Geneva, sans-serif;
+  /* font-family: system-ui, -apple-system, Geneva, sans-serif; */
+  font-family: Monaco, 'Courier New', monospace;
   font-weight: 400;
   font-size: 14pt;
   color: #555;
+  line-height: 1.2em;
 }
 
 #player .innerText {
@@ -614,6 +616,9 @@ img.issue-icon.warning {
 #player .innerText p.customInstruction {
   color: rgb(179, 94, 94);
   font-family: Monaco, 'Courier New', monospace;
+  font-size: 15px;
+  padding: 0;
+  line-height: 5px;
 }
 
 #player.altKey .innerText p span:hover {
@@ -656,6 +661,7 @@ img.issue-icon.warning {
 }
 
 #player p.tags, #player p.choice .tags {
+  display: none;
   color: #AAA;
   text-align: center;
   font-family: monospace;
@@ -927,4 +933,18 @@ img.issue-icon.warning {
 
 .sidebar .nav-wrapper::-webkit-scrollbar-thumb {
   background: #DDDDDD;
+}
+
+.ace_editor {
+  font-family: "IA Writer Mono S" !important;
+  line-height: 1.8em;
+}
+
+.dialogue {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.ace_speaker {
+  color: #f26773;
 }

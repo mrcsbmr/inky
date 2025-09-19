@@ -477,6 +477,13 @@ var inkHighlightRules = function() {
             // stop parsing the tag at "[" or "]".
             regex: /#[^\[\]$]+/
         }],
+        "#speaker": [{
+            regex: /^(\s*)(\/[A-Za-z0-9_]+)/,
+            token: [
+                "speaker",        // optional leading whitespace
+                "speaker.name"    // /character
+            ]
+        }],
         "#inlineContent": [{ 
             include: "#inlineConditional"
         }, {
@@ -522,6 +529,8 @@ var inkHighlightRules = function() {
             include: "#mixedContent"
         }, {
             include: "#customInstruction"
+        }, {
+            include: "#speaker"
         }],
 
         // This will be added when overriden in project settings

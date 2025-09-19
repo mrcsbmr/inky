@@ -46,8 +46,8 @@ function showSessionView(sessionId) {
 
 function fadeIn($jqueryElement) {
 
-    const minimumTimeSeparation = 200;
-    const animDuration = 1000;
+    const minimumTimeSeparation = 10;
+    const animDuration = 100;
 
     var currentTime = Date.now();
     var timeSinceLastFade = currentTime - lastFadeTime;
@@ -113,7 +113,19 @@ function prepareForNewPlaythrough(sessionId) {
 
 function addTextSection(text)
 {
-    var $paragraph = $("<p class='storyText'></p>");
+    //var $paragraph = $("<p class='storyText'></p>");
+
+    if (text.startsWith("/")) {
+        text = text.substring(1).toUpperCase();
+        var $paragraph = $("<p align=center class='storyText speaker'></p>");
+    }
+    else if (text.startsWith("INKLOG: ")) {
+        text = text.substring(8);
+        var $paragraph = $("<p class='storyText inkLog'></p>");
+    }
+    else {
+        var $paragraph = $("<p class='storyText dialogue'></p>");
+    }
 
     // Game-specific instruction prefix, e.g. >>> START CAMERA: Wide shot
     if( instructionPrefix && text.trim().startsWith(instructionPrefix) ) {
@@ -191,7 +203,7 @@ function addChoice(choice, callback)
     //    },
     //    ... other stuff, e.g. choice number ...
     // }
-    var $choice = $("<a href='#'>"+choice.choice.text+"</a>");
+    var $choice = $("<a href='#'>" + choice.choice.text.split("ID=")[0].trim() + "</a>");
     var $tags = null;
     if( choice.choice.tags != null && choice.choice.tags.length > 0 ) {
         var tagsStr = "# " + choice.choice.tags.join(" # ");

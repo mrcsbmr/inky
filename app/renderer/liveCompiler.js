@@ -281,7 +281,7 @@ ipc.on("play-generated-text", (event, result, fromSessionId) => {
     // May have just finished compiling, have text
     updateCompilerIsBusy(false);
 
-    if (result.startsWith(">>>")) return;
+    //if (result.startsWith(">>>")) return;
     
     events.textAdded(result);
 });
