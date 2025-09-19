@@ -5,9 +5,7 @@ var events = {};
 var lastFadeTime = 0;
 var $textBuffer = null;
 var instructionPrefix = null;
-
-var $playerButton;
-const slideAnimDuration = 200;
+var animationEnabled = true;
 
 document.addEventListener("keyup", function(){
     $("#player").removeClass("altKey");
@@ -65,8 +63,6 @@ function fadeIn($jqueryElement) {
 }
 
 function contentReady() {
-    $playerButton = $("#toolbar .player-toggle.button")
-    $playerButton.addClass("selected");
 
     var $scrollContainer = $("#player .scrollContainer");
     $scrollContainer.stop();
@@ -96,7 +92,7 @@ function contentReady() {
 
         $scrollContainer.animate({
             scrollTop: (offset)
-        }, 500, function(){
+        }, animationEnabled ? 500 : 100, function(){
             // Shrink, if needed
             if( prevHeight > newHeight ) {
                 $textBuffer.height(newHeight);
@@ -117,18 +113,7 @@ function prepareForNewPlaythrough(sessionId) {
 
 function addTextSection(text)
 {
-    if (text.startsWith("/")) {
-        text = text.substring(1).toUpperCase();
-        var $paragraph = $("<p align=center class='storyText speaker'></p>");
-    }
-    else if (text.startsWith("INKLOG: ")) {
-        text = text.substring(8);
-        var $paragraph = $("<p class='storyText inkLog'></p>");
-    }
-    else {
-        var $paragraph = $("<p class='storyText dialogue'></p>");
-    }
-   
+    var $paragraph = $("<p class='storyText'></p>");
 
     // Game-specific instruction prefix, e.g. >>> START CAMERA: Wide shot
     if( instructionPrefix && text.trim().startsWith(instructionPrefix) ) {
@@ -181,7 +166,7 @@ function addTextSection(text)
         }
     });
 
-    if( shouldAnimate() )
+    if( animationEnabled && shouldAnimate() )
         fadeIn($paragraph);
 }
 
@@ -192,7 +177,7 @@ function addTags(tags)
 
     $textBuffer.append($tags);
 
-    if( shouldAnimate() )
+    if( animationEnabled && shouldAnimate() )
         fadeIn($tags);
 }
 
@@ -220,7 +205,7 @@ function addChoice(choice, callback)
     $textBuffer.append($choicePara);
 
     // Fade it in
-    if( shouldAnimate() )
+    if( animationEnabled && shouldAnimate() )
         fadeIn($choicePara);
 
     // When this choice is clicked...
@@ -245,7 +230,7 @@ function addTerminatingMessage(message, cssClass)
     var $message = $(`<p class='${cssClass}'>${message}</p>`);
     $textBuffer.append($message);
 
-    if( shouldAnimate() )
+    if( animationEnabled && shouldAnimate() )
         fadeIn($message);
 }
 
@@ -254,7 +239,7 @@ function addLongMessage(message, cssClass)
     var $message = $(`<pre class='${cssClass}'>${message}</pre>`);
     $textBuffer.append($message);
 
-    if( shouldAnimate() )
+    if( animationEnabled && shouldAnimate() )
         fadeIn($message);
 }
 
@@ -310,43 +295,9 @@ function setInstructionPrefix(prefix) {
     }
 }
 
-function pause() {
-    animatePlayer(false);
+function setAnimationEnabled(animEnabled) {
+    animationEnabled = animEnabled;
 }
-
-function resume() {
-    animatePlayer(true);
-}
-
-
-function animatePlayer(show) {
-
-    if (!show)
-        $("#player").hide();   
-
-    $("#player").animate({
-        left: show ? "50%" : 0, 
-        width: show ? "50%" : 0 
-    }, slideAnimDuration, () => {
-        show ? $("#player").show() : $("#player").hide();    
-    });
-
-    if (show) {
-        $("#main").children(".twopane").children(".split").show();
-        $("#main").children(".twopane").children(".split").css("left", "50%");
-    }
-    else {
-        $("#main").children(".twopane").children(".split").hide();
-        //$("#main").children(".twopane").children(".split").css("left", "100%");
-    }
-    
-    $("#editor").animate({
-        right: show ? "50%" : 0,
-        width: show ? "50%" : "100%"
-    }, slideAnimDuration);
-
-}
-
 
 exports.PlayerView = {
     setEvents: (e) => { events = e; },
@@ -363,6 +314,5 @@ exports.PlayerView = {
     showSessionView: showSessionView,
     previewStepBack: previewStepBack,
     setInstructionPrefix: setInstructionPrefix,
-    pause: pause,
-    resume: resume
+    setAnimationEnabled: setAnimationEnabled
 };  
